@@ -95,6 +95,29 @@ DATABASES = {
     }
 }
 
+ENV = os.environ.get("ENV")
+DB_HOST = os.environ.get("DB_HOST")
+DB_PORT = os.environ.get("DB_PORT")
+MYSQL_DATABASE = os.environ.get("MYSQL_DATABASE")
+# So you don't have to use root, but you can if you like
+MYSQL_USER = os.environ.get("MYSQL_USER")
+# You can use whatever password you like
+MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD")
+
+DEV_DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": MYSQL_DATABASE,
+        "HOST": DB_HOST,
+        "USER": MYSQL_USER,
+        "PASSWORD": MYSQL_PASSWORD,
+        # "PORT": DB_PORT,
+        "OPTIONS": {"init_command": "SET default_storage_engine=INNODB;"},
+    }
+}
+
+if ENV == "DEV":
+    DATABASES = DEV_DATABASES
 
 # 指定django认证系统使用的模型类
 AUTH_USER_MODEL = 'user.User'

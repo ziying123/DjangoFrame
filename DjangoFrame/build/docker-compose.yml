@@ -1,0 +1,38 @@
+version: "2"
+
+services:
+
+  mysql.db:
+    container_name: "mysql.db"
+    image: "mysql:5.7.19"
+    restart: always
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES utf8mb4;' --innodb-flush-log-at-trx-commit=0
+    expose:
+      - "3306"
+    volumes:
+      - ./build/data/mysql:/var/lib/mysql:rw
+    environment:
+      - MYSQL_DATABASE=project
+      - MYSQL_ROOT_PASSWORD=123456
+
+  web:
+    container_name: "web"
+    image: "project:base"
+    #restart: alaways
+    volumes:
+      - "./:/data/Project"
+#      - "./build/nginx/conf.d:/etc/nginx/conf.d"
+#      - "./build/nginx/nginx.conf:/etc/nginx/nginx.conf"
+    expose:
+      - "9000"
+    ports:
+      - "8080:8080"
+#      - "8080:8080"
+#    command: ["/usr/local/bin/uwsgi", "--ini", "/data/Project/uwsgi.ini"]
+    command: ["tail", "-f", "/dev/null"]
+    env_file: ./build/env/dev.env
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1k"
+        max-file: "3"
